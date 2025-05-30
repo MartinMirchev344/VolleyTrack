@@ -8,3 +8,14 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
+class Player(models.Model):
+    team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='players')
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    position = models.CharField(max_length=30)
+    number = models.PositiveIntegerField()
+    age = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.team.name})"
