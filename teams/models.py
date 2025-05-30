@@ -8,6 +8,7 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+    
 
 class Player(models.Model):
     team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='players')
@@ -19,3 +20,15 @@ class Player(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.team.name})"
+    
+    
+class Match(models.Model):
+    home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches')
+    away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches')
+    match_date = models.DateTimeField()
+    location = models.CharField(max_length=100)
+    home_score = models.IntegerField(default=0)
+    away_score = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.home_team.name} vs {self.away_team.name} @ {self.location}"
