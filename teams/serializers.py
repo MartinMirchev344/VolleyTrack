@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Team
 from .models import Player
 from .models import Match
+from .models import League
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,4 +25,10 @@ class MatchSerializer(serializers.ModelSerializer):
 class MatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
+        fields = '__all__'
+
+
+class LeagueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = League
         fields = '__all__'

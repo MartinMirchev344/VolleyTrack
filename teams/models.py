@@ -4,6 +4,7 @@ class Team(models.Model):
     name = models.CharField(max_length = 100, unique = True)
     coach_name = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100, blank=True)
+    league = models.ForeignKey('League', on_delete=models.SET_NULL, null=True, blank=True, related_name='teams')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -32,3 +33,13 @@ class Match(models.Model):
 
     def __str__(self):
         return f"{self.home_team.name} vs {self.away_team.name} @ {self.location}"
+    
+
+class League(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    country = models.CharField(max_length=100, blank=True)
+    level = models.CharField(max_length=50, blank=True) 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name

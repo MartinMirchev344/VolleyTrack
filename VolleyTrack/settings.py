@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'VolleyTrack',
     'teams',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -128,4 +129,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSIONS': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
