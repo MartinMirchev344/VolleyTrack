@@ -3,6 +3,7 @@ from rest_framework import viewsets
 
 from .models import Team
 from .serializers import TeamSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Player
 from .serializers import PlayerSerializer
@@ -16,6 +17,8 @@ from .serializers import LeagueSerializer
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['league']
 
 
 class PlayerViewSet(viewsets.ModelViewSet):
