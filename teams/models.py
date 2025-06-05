@@ -35,6 +35,19 @@ class Match(models.Model):
         return f"{self.home_team.name} vs {self.away_team.name} @ {self.location}"
     
 
+class PlayerMatchStats(models.Model):
+    match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='player_stats')
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='match_stats')
+    
+    points = models.PositiveIntegerField(default=0)
+    blocks = models.PositiveIntegerField(default=0)
+    aces = models.PositiveIntegerField(default=0)
+    errors = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.player.first_name} {self.player.last_name} in {self.match}"
+    
+
 class League(models.Model):
     name = models.CharField(max_length=100, unique=True)
     country = models.CharField(max_length=100, blank=True)

@@ -13,6 +13,9 @@ from .serializers import PlayerSerializer
 from .models import Match
 from .serializers import MatchSerializer
 
+from .models import PlayerMatchStats
+from .serializers import PlayerMatchStatsSerializer
+
 from .models import League
 from .serializers import LeagueSerializer
 
@@ -43,6 +46,11 @@ class MatchViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['home_team', 'away_team', 'match_date']
     ordering_fields = ['match_date']
+
+
+class PlayerMatchStatsViewSet(viewsets.ModelViewSet):
+    queryset = PlayerMatchStats.objects.all()
+    serializer_class = PlayerMatchStatsSerializer
 
 
 class LeagueViewSet(viewsets.ModelViewSet):
