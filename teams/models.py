@@ -47,6 +47,9 @@ class PlayerMatchStats(models.Model):
     def __str__(self):
         return f"{self.player.first_name} {self.player.last_name} in {self.match}"
     
+    class Meta:
+        unique_together = ('match', 'player')
+    
 
 class League(models.Model):
     name = models.CharField(max_length=100, unique=True)
