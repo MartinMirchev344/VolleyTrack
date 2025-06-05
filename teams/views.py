@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import Team
 from .serializers import TeamSerializer
-from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Player
 from .serializers import PlayerSerializer
@@ -13,24 +15,34 @@ from .serializers import MatchSerializer
 
 from .models import League
 from .serializers import LeagueSerializer
-from rest_framework.decorators import action
-from rest_framework.response import Response
+
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['league']
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['league', 'city']
+    search_fields = ['name']
+    ordering_fields = ['name']
 
 
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['team', 'position', 'age']
+    search_fields = ['first_name', 'last_name']
+    ordering_fields = ['age', 'number']
 
 
 class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['home_team', 'away_team', 'match_date']
+    ordering_fields = ['match_date']
 
 
 class LeagueViewSet(viewsets.ModelViewSet):
