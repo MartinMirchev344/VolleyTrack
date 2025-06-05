@@ -13,6 +13,8 @@ from .serializers import MatchSerializer
 
 from .models import League
 from .serializers import LeagueSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
@@ -34,3 +36,41 @@ class MatchViewSet(viewsets.ModelViewSet):
 class LeagueViewSet(viewsets.ModelViewSet):
     queryset = League.objects.all()
     serializer_class = LeagueSerializer
+
+    @action(detail=True, methods=['get'])
+    def standings(self, request, pk=None):
+        league = self.get_object()
+        teams = league.teams.all()
+
+        standings = []
+
+        for team in teams:
+            home_matches = Match.objects.filter(home_team=team)
+            away_matches = Match.objects.filter(away_team=team)
+            all_matches = home_matches.union(away_matches)
+
+            wins = 0
+            losses = 0
+            played = 0
+
+            for match in all_matches:
+                if match.home_score == 0 and match.away_score == 0:
+                    continue
+                played += 1
+                if (match.home_team == team and match.home_score > match.away_score) or \
+                   (match.away_team == team and match.away_score > match.home_score):
+                    wins += 1
+                else:
+                    losses += 1
+
+            standings.append({
+                "team": team.name,
+                "matches_played": played,
+                "wins": wins,
+                "losses": losses,
+                "points": wins * 3
+            })
+
+        standings.sort(key=lambda x: x['points'], reverse=True)
+
+        return Response(standings)
