@@ -1,34 +1,39 @@
-from django.shortcuts import render
-from rest_framework import viewsets, filters
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Team
-from .serializers import TeamSerializer
-
-from .models import Player
-from .serializers import PlayerSerializer
-
-from .models import Match
-from .serializers import MatchSerializer
-
-from .models import PlayerMatchStats
-from .serializers import PlayerMatchStatsSerializer
-
-from .models import League
-from .serializers import LeagueSerializer
+from .models import Team, Player, Match, PlayerMatchStats, League
+from .serializers import TeamSerializer, PlayerSerializer, MatchSerializer, PlayerMatchStatsSerializer, LeagueSerializer
 
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['league']
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['league', 'city']
     search_fields = ['name']
     ordering_fields = ['name']
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            "message": "Team created successfully.",
+            "data": response.data
+        }, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return Response({
+            "message": "Team updated successfully.",
+            "data": response.data
+        }, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return Response({
+            "message": "Team deleted successfully."
+        }, status=status.HTTP_204_NO_CONTENT)
 
 
 class PlayerViewSet(viewsets.ModelViewSet):
@@ -39,6 +44,26 @@ class PlayerViewSet(viewsets.ModelViewSet):
     search_fields = ['first_name', 'last_name']
     ordering_fields = ['age', 'number']
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            "message": "Player created successfully.",
+            "data": response.data
+        }, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return Response({
+            "message": "Player updated successfully.",
+            "data": response.data
+        }, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return Response({
+            "message": "Player deleted successfully."
+        }, status=status.HTTP_204_NO_CONTENT)
+
 
 class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.all()
@@ -47,10 +72,50 @@ class MatchViewSet(viewsets.ModelViewSet):
     filterset_fields = ['home_team', 'away_team', 'match_date']
     ordering_fields = ['match_date']
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            "message": "Match created successfully.",
+            "data": response.data
+        }, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return Response({
+            "message": "Match updated successfully.",
+            "data": response.data
+        }, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return Response({
+            "message": "Match deleted successfully."
+        }, status=status.HTTP_204_NO_CONTENT)
+
 
 class PlayerMatchStatsViewSet(viewsets.ModelViewSet):
     queryset = PlayerMatchStats.objects.all()
     serializer_class = PlayerMatchStatsSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            "message": "Player stats recorded.",
+            "data": response.data
+        }, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return Response({
+            "message": "Player stats updated.",
+            "data": response.data
+        }, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return Response({
+            "message": "Player stats deleted."
+        }, status=status.HTTP_204_NO_CONTENT)
 
 
 class LeagueViewSet(viewsets.ModelViewSet):
@@ -93,4 +158,8 @@ class LeagueViewSet(viewsets.ModelViewSet):
 
         standings.sort(key=lambda x: x['points'], reverse=True)
 
-        return Response(standings)
+        return Response({
+            "league": league.name,
+            "status": status.HTTP_200_OK,
+            "standings": standings
+        }, status=status.HTTP_200_OK)
